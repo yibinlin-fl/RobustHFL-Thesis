@@ -1,0 +1,11 @@
+extends: base.yaml
+out: results/runs/probe1
+clients:
+  - model: ResNet10
+    corruption: {kind: gaussian_noise, severity: 3, ratio: 0.0}
+  - model: ResNet10
+    corruption: {kind: gaussian_noise, severity: 3, ratio: 0.6}
+  - model: MobileNetV2
+    corruption: {kind: defocus_blur, severity: 5, ratio: 0.0}
+  - model: MobileNetV2
+    corruption: {kind: defocus_blur, severity: 5, ratio: 0.6}

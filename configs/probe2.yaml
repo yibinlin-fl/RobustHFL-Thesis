@@ -1,0 +1,2 @@
+extends: base.yaml
+out: results/runs/probe2

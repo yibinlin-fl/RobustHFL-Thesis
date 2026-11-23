@@ -1,0 +1,3 @@
+extends: smoke.yaml
+out: results/runs/smoke/abcd
+groups: [A, B, C, D]

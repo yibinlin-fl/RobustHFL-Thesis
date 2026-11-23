@@ -1,0 +1,35 @@
+extends: base.yaml
+seed: 20261123
+device: cpu
+threads: 2
+download: false
+manifest: results/smoke_splits_manifest.json
+out: results/runs/smoke
+split:
+  proxy10_size: 64
+  proxy100_size: 64
+  min_private: 32
+clients:
+  - model: ResNet10
+    corruption: {kind: gaussian_noise, severity: 3, ratio: 0.6}
+  - model: MobileNetV2
+    corruption: {kind: defocus_blur, severity: 5, ratio: 0.4}
+limits: {train: 16, val: 8, proxy: 12}
+rounds: 2
+batch_size: 4
+eval_batch_size: 8
+local_steps: 1
+kd_steps: 1
+local: {warmup_rounds: 1}
+probe1:
+  warmup_rounds: 1
+  quantile_bins: 2
+  group_size: 2
+  intervention_steps: 1
+  intervention_repeats: 1
+  comparison_rounds: 1
+probe2:
+  delta_steps: 1
+  repeats: 1
+  comparison_rounds: 1
+  sanity_image: results/freq_views_sanity.png

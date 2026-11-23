@@ -1,0 +1,13 @@
+extends: openi_precheck.yaml
+purpose: engineering
+protocol:
+  rounds: 2
+  local_steps: 1
+  kd_steps: 1
+  batch_size: 4
+  eval_batch_size: 8
+  limits: {train: 16, val: 4, proxy: 12}
+work1: {warmup_round: 1, repeats: 1, steps: 1, background_size: 2}
+probe1: {quantile_bins: 2, group_size: 2}
+probe2: {domains: [in_domain_proxy], delta_steps: 1, repeats: 1}
+budget: {max_seconds: 170, upload_each_stage: false}

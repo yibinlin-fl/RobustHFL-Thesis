@@ -1,0 +1,62 @@
+seed: 20261124
+device: auto
+threads: 4
+data_root: data
+download: true
+manifest: results/splits_manifest.json
+out: results/runs/baseline
+checkpoint_dir: results/checkpoints
+split:
+  partition: iid
+  alpha: 0.5
+  proxy10_size: 5000
+  proxy100_size: 5000
+  val_fraction: 0.10
+  min_private: 96
+clients:
+  - model: ResNet10
+    corruption: {kind: gaussian_noise, severity: 1, ratio: 0.0}
+  - model: ResNet12
+    corruption: {kind: defocus_blur, severity: 3, ratio: 0.2}
+  - model: ShuffleNet
+    corruption: {kind: gaussian_noise, severity: 3, ratio: 0.4}
+  - model: MobileNetV2
+    corruption: {kind: defocus_blur, severity: 5, ratio: 0.6}
+proxy: cifar100_proxy
+batch_size: 32
+eval_batch_size: 64
+rounds: 8
+local_steps: 96
+kd_steps: 16
+lr: 0.01
+momentum: 0.9
+weight_decay: 0.0001
+clip: 5.0
+temperature: 2.0
+local:
+  warmup_rounds: 2
+  prototype_ema: 0.8
+  scale: percentile
+  a_min: 0.2
+  lambda: 1.0
+  consistency_weight: const_1
+frequency:
+  eps: 0.3
+  cutoff: 0.17
+  transition: 0.03
+  gamma_full: 0.5
+  score_temperature: 0.1
+probe1:
+  warmup_rounds: 2
+  quantile_bins: 3
+  group_size: 16
+  soft_weight: 0.4
+  intervention_steps: 2
+  intervention_repeats: 3
+  comparison_rounds: 3
+probe2:
+  domains: [cifar100_proxy, in_domain_proxy]
+  delta_steps: 3
+  repeats: 3
+  comparison_rounds: 2
+groups: [A, B, C, D]

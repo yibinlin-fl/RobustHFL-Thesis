@@ -1,0 +1,42 @@
+extends: base.yaml
+mode: env_check
+purpose: research
+seed: 20261124
+device: cuda
+dataset_subdir: .
+run_id: auto
+protocol:
+  rounds: 10
+  local_steps: 96
+  kd_steps: 12
+  batch_size: 32
+  eval_batch_size: 64
+  proxy: in_domain_proxy
+  limits: {train: 4096, val: 384, proxy: 2048}
+mixture:
+  moderate: 3
+  severe: 5
+  moderate_fraction: 0.30
+  severe_fraction: 0.30
+downweight: {fraction: 0.25, weight: 0.4}
+work1: {warmup_round: 3, repeats: 2, steps: 1, background_size: 8}
+probe1: {include_entropy: true, quantile_bins: 3, group_size: 8}
+probe2:
+  domains: [in_domain_proxy, cifar100_proxy]
+  delta_steps: 3
+  repeats: 2
+  run_comparisons: false
+quality:
+  min_clean_accuracy: 0.20
+  majority_margin: 0.05
+  min_predicted_classes: 3
+  max_majority_prediction: 0.85
+budget:
+  max_seconds: 7200
+  env_check_seconds: 170
+  points_per_hour: 9
+  max_points: 18
+  estimate_margin: 1.75
+  reserve_seconds: 900
+  upload_each_stage: false
+  upload_every_rounds: 0
