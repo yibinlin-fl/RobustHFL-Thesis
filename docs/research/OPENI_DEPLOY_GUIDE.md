@@ -15,15 +15,22 @@
 
 数据归档带官方原包结构。训练径路按官方 MD5 核验并仅解析训练成员。参考切分含官方测试索引保留项，没有测试像素或标签的导出。不同种子由运行时重新生成冻结清单。CIFAR-10-C 单独保存，研究阶段无需上传。上传包的 SHA-256 sidecar 保存在本地。 [官方 CIFAR 数据](https://cave.cs.toronto.edu/kriz/cifar.html) · [数据归档 MD5](https://zenodo.org/records/10089977)
 
-代码仓库选择私有。发布分支为 `openi-v2`，本地提交 SHA 用 `git rev-parse HEAD` 查看。在 OpenI 项目页面创建空的私有 Git 仓库，初次推送时保持远端为空，避免把两个不同的初始提交合并。选择页面提供的 HTTPS 克隆地址，确认它属于自己的项目，并在本地仓库根目录执行：
+GitHub 负责私有版本管理，`main` 用于稳定源码，`openi-v2` 用于 OpenI 任务。发布分支的 SHA 可以用 `git rev-parse openi-v2` 查看。`origin` 指向 GitHub 私有仓库。OpenI 官方指南确认可以向 OpenI 项目推送 Git 分支，再在计算任务中选择该项目。GitHub 私有仓库的直接授权导入还没有为本项目验收。 [OpenI 官方 Git 上传说明](https://openi.pcl.ac.cn/guide/index.html)
+
+如果 OpenI 账号界面明确提供私有 GitHub 仓库授权迁移，可在平台授权界面仅授权该仓库，选定目标为私有，完成后核对 `openi-v2` 的 SHA。以界面实际提供的权限为准。也可直接在 OpenI 创建空的私有项目，复制该项目的 HTTPS 克隆地址，在本地用独立的 `openi` 远端同步同一个分支：
 
 ```powershell
-git remote add origin <从私有OpenI项目复制的HTTPS克隆地址>
-git push -u origin openi-v2
-git ls-remote --heads origin refs/heads/openi-v2
+$openiRemote = Read-Host '粘贴私有 OpenI 项目的 HTTPS 克隆地址'
+git remote add openi $openiRemote
+git push openi openi-v2
+git ls-remote --heads openi refs/heads/openi-v2
 ```
 
-如果已设置远端，先用 `git remote -v` 核对其目标再推送。按本机 Git 凭据提示认证即可，避免把访问令牌写进 URL 或源码。确认远端返回的 SHA 与本地一致，再到 OpenI 新建任务。提交范围为源码、配置、测试、依赖和部署文档。数据、checkpoint、全部本地结果和导师材料留在本地。
+如果已经有名为 `openi` 的远端，先核对其目标再推送。按本机 Git 凭据提示认证。确认远端返回的 SHA 与本地一致，再到 OpenI 新建任务。训练容器只使用平台提供的项目代码。提交范围为源码、配置、测试、依赖和部署文档。数据、checkpoint、本地结果和导师材料留在本地。
+
+### 第三方参考
+
+`third_party/` 中的 RAHFL、AugHFL、fl_data_quality 是独立参考仓库。训练使用本项目的 `core/`、`baselines/` 和 `methods/`。三个固定参考提交的 Git 树里均未找到独立的 LICENSE、COPYING 或 NOTICE 文件，因此源码发布只保留引用与固定提交获取脚本。需要核对原参考时可在本地使用 `scripts/clone_references.ps1`。脚本会检查取回的提交，OpenI 运行无需安装这些参考仓库。 [RAHFL](https://github.com/FangXiuwen/RAHFL/tree/ba21203ca200ecdaa765539ba6aeacd05d2cbc99) · [AugHFL](https://github.com/FangXiuwen/AugHFL/tree/ac4c64fbef0c6ccefae3bf796781e5097b590437) · [fl_data_quality](https://github.com/fardatalab/fl_data_quality/tree/c9a5d584ce0805a5fcda70707f8ca640aabfc9a8)
 
 ## 新建计算任务
 

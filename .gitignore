@@ -10,11 +10,17 @@ __pycache__/
 .pytest_cache/
 .venv/
 .venv*/
+venv/
+env/
+.conda/
 *.pt
 *.pth
 *.pyc
 *.ckpt
 *.safetensors
+*.log
+*.pdf
+/papers/
 *.zip
 *.tar
 *.tar.gz
