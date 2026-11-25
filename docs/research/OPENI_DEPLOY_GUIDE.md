@@ -43,7 +43,7 @@ git ls-remote --heads openi refs/heads/openi-v2
 | GPU 资源规格 | `1 × NVIDIA A100 40 GB`，用户截图为 8 CPU / 50 GB RAM。实际资源以后续 `nvidia-smi` 为准。兼容的 V100 也可做环境检查 |
 | 任务名称 | `robusthfl-v2-env-01` |
 | 任务描述 | `V2 环境、数据隔离与吞吐验收，单卡小批量，无科研结论` |
-| 镜像 | 选择预装 Python 3.11+、CUDA 版 PyTorch、匹配 torchvision 和可用 c2net 的 PyTorch 镜像。需 NumPy、SciPy、PyYAML、Pillow、scikit-learn、matplotlib |
+| 镜像 | 选择提供 Python 3.10+、CUDA 版 PyTorch、匹配 torchvision 和可用 c2net 的 PyTorch 镜像。需 NumPy、SciPy、PyYAML、Pillow、scikit-learn、matplotlib |
 | 数据集 | 选择前述已上传的 V2 数据集 |
 | 模型 | 留空，基础模型由 CE 从头训练。恢复可按下节关联结果 |
 | 项目 | 你提交 V2 源码的私有项目 |

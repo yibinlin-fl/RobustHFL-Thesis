@@ -28,7 +28,7 @@ python -m scripts.openi.source_bundle --out openi-transfer/robusthfl-openi-web-s
 
 ## 2. 在网页建第一次任务
 
-创建训练任务，选择对应仓库、分支、已上传的 CIFAR 数据集，以及分配一张 V100 的 PyTorch GPU 镜像。镜像需要 Python 3.11 或更新版本、兼容 V100 的 PyTorch/torchvision、c2net 和 `requirements-openi.txt` 中的实验依赖。当前没有经过实际 OpenI 任务验证的镜像标签。先以平台可选镜像试冒烟，从日志确认依赖和驱动。环境兼容性以实际 CUDA 反向、FFT 和 torchvision CUDA 算子测试为准。[PyTorch 官方版本列表](https://pytorch.org/get-started/previous-versions/) · [c2net SDK 接口](https://pypi.org/project/c2net/)
+创建训练任务，选择对应仓库、分支、已上传的 CIFAR 数据集，以及分配一张 V100 的 PyTorch GPU 镜像。镜像需要 Python 3.10 或更新版本、兼容 V100 的 PyTorch/torchvision、c2net 和 `requirements-openi.txt` 中的实验依赖。当前没有经过实际 OpenI 任务验证的镜像标签。先以平台可选镜像试冒烟，从日志确认依赖和驱动。环境兼容性以实际 CUDA 反向、FFT 和 torchvision CUDA 算子测试为准。[PyTorch 官方版本列表](https://pytorch.org/get-started/previous-versions/) · [c2net SDK 接口](https://pypi.org/project/c2net/)
 
 | 网页字段 | 第一次填写 |
 | --- | --- |

@@ -2,7 +2,6 @@
 import argparse
 from contextlib import redirect_stderr, redirect_stdout
 from datetime import datetime, timezone
-import hashlib
 import json
 from pathlib import Path
 import re
@@ -11,6 +10,11 @@ import sys
 from tempfile import mkdtemp
 import traceback
 from uuid import uuid4
+
+if not __package__:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from core.hashing import file_hash as file_sha
 
 
 MODES = ("env_check", "work1_precheck", "work2_heterogeneity", "work2_frequency", "precheck_all")
@@ -72,11 +76,6 @@ def plain_json(path, value):
     with path.open("w", encoding="utf-8") as handle:
         json.dump(value, handle, ensure_ascii=False, indent=2, allow_nan=False)
         handle.write("\n")
-
-
-def file_sha(path):
-    with path.open("rb") as handle:
-        return hashlib.file_digest(handle, "sha256").hexdigest()
 
 
 def verified_files(source):

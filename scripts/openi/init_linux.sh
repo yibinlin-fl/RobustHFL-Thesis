@@ -3,7 +3,7 @@ set -euo pipefail
 repo="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 python_bin="${PYTHON_BIN:-python3}"
 env_dir="${ROBUSTHFL_VENV:-$PWD/.venv-openi}"
-"$python_bin" -c 'import sys; assert (3, 11) <= sys.version_info < (3, 13), sys.version'
+"$python_bin" -c 'import sys; assert (3, 10) <= sys.version_info < (3, 13), sys.version'
 "$python_bin" -m venv --system-site-packages "$env_dir"
 py="$env_dir/bin/python"
 if [[ -n "${TORCH_WHEEL_INDEX:-}" ]]; then

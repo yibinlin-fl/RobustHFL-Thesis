@@ -11,6 +11,7 @@ import torch
 import yaml
 from torch.utils.data import DataLoader
 
+from core.hashing import file_hash
 from core.models import build_model
 
 
@@ -122,11 +123,6 @@ def init_client(name, cfg, device, index):
         torch.random.default_generator.manual_seed(cfg["seed"] + index)
         model = build_model(name).to(device)
     return model, optimizer(model, cfg)
-
-
-def file_hash(path):
-    with Path(path).open("rb") as handle:
-        return hashlib.file_digest(handle, "sha256").hexdigest()
 
 
 def model_state_hash(model):

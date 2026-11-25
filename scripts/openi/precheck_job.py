@@ -43,8 +43,8 @@ TABLES = {
 
 
 def inspect_environment(device, paths):
-    if sys.version_info < (3, 11):
-        raise RuntimeError("Python 3.11+ is required")
+    if sys.version_info < (3, 10):
+        raise RuntimeError("Python 3.10+ is required")
     if device.type == "cuda":
         report = inspect(paths)
     else:

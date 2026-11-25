@@ -14,12 +14,12 @@ from torch.utils.data import Dataset
 from torchvision.datasets import CIFAR10, CIFAR100
 
 from core.corruptions import Corruption, PRIVATE_ROLES
+from core.hashing import file_hash
 from core.splits import digest, freeze, make_manifest
 
 
 def md5_file(path):
-    with Path(path).open("rb") as handle:
-        return hashlib.file_digest(handle, "md5").hexdigest()
+    return file_hash(path, "md5")
 
 
 def load_cifar(root, cls, *, download, final_test=False):

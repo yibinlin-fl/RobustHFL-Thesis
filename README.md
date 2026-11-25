@@ -6,7 +6,7 @@ OpenI 托管任务的 V2 入口为 `scripts/openi_entry.py`。默认运行环境
 
 ## 环境与数据
 
-使用 Python 3.11 或更新版本。若新建环境，先按本机 CUDA 环境安装配对版本的 PyTorch 和 torchvision，再安装其余依赖。默认 `device: auto` 有可用 CUDA 时使用 GPU。显式传入 `--device cuda` 可在 CUDA 构建不可用时立即退出。本机 Anaconda base 是 CPU 版 PyTorch，已有的 `pytorch` 环境是通过 RTX 3050 验证的 CUDA 构建。完整版本见 [审计报告](results/audit_report.md)。
+使用 Python 3.10 或更新版本。若新建环境，先按本机 CUDA 环境安装配对版本的 PyTorch 和 torchvision，再安装其余依赖。默认 `device: auto` 有可用 CUDA 时使用 GPU。显式传入 `--device cuda` 可在 CUDA 构建不可用时立即退出。本机 Anaconda base 是 CPU 版 PyTorch，已有的 `pytorch` 环境是通过 RTX 3050 验证的 CUDA 构建。完整版本见 [审计报告](results/audit_report.md)。
 
 ```powershell
 python -m pip install -r requirements.txt

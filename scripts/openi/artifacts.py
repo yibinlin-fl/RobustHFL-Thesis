@@ -1,6 +1,5 @@
 """Versioned recovery archives with a file-by-file SHA-256 manifest."""
 import argparse
-import hashlib
 import io
 import json
 import os
@@ -9,7 +8,7 @@ import shutil
 import tarfile
 import tempfile
 
-from core.runtime import file_hash
+from core.hashing import file_hash, stream_hash
 from scripts.openi.state import commit_stage, make_stage
 
 
@@ -95,7 +94,7 @@ def verify(archive_path, destination=None):
                 raise ValueError(f"Wrong size: {entry.name}")
             with archive.extractfile(entry) as source:
                 if stage is None:
-                    checksum = hashlib.file_digest(source, "sha256").hexdigest()
+                    checksum = stream_hash(source)
                 else:
                     target = stage.joinpath(*safe_name(entry.name).parts)
                     target.parent.mkdir(parents=True, exist_ok=True)

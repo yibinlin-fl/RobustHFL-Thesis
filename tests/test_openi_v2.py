@@ -1,5 +1,6 @@
 from collections import Counter
 from pathlib import Path
+import hashlib
 import io
 import json
 import tarfile
@@ -11,7 +12,8 @@ import torch
 from torch.utils.data import TensorDataset
 
 from core.corruptions import Corruption
-from core.data import ImageRole
+from core.data import ImageRole, md5_file
+from core.hashing import stream_hash
 from core.splits import make_manifest, validate_manifest
 from scripts import openi_entry
 from scripts.openi import v2_data
@@ -84,6 +86,7 @@ def test_classification_gate_rejects_collapsed_checkpoint():
 
 def test_c2net_prepare_then_error_still_attempts_upload(tmp_path, monkeypatch):
     from scripts.openi import precheck_job
+    monkeypatch.delattr(hashlib, "file_digest", raising=False)
     repo = Path(openi_entry.__file__).resolve().parents[1]
     context = SimpleNamespace(code_path=repo, dataset_path=tmp_path, output_path=tmp_path / "output")
     def fail(*args):
@@ -97,11 +100,22 @@ def test_c2net_prepare_then_error_still_attempts_upload(tmp_path, monkeypatch):
     monkeypatch.setattr(v2_data, "discover", lambda *a, **k: (tmp_path, {}))
     monkeypatch.setattr(precheck_job, "v2_job", fail)
     with pytest.raises(RuntimeError, match="sentinel"):
-        openi_entry.run(openi_entry.arguments(["--run-id", "failure-test"]))
+        openi_entry.run(openi_entry.arguments(["--mode", "work1_precheck", "--run-id", "failure-test"]))
     assert calls[0]["status"] == "failed"
     root = Path(context.output_path) / "RobustHFL-V2" / "failure-test"
     assert "RuntimeError: sentinel" in (root / "execution.log").read_text()
     assert openi_entry.verified_files(root)
+
+
+def test_streaming_checksums_without_hashlib_file_digest(tmp_path, monkeypatch):
+    monkeypatch.delattr(hashlib, "file_digest", raising=False)
+    payload = b"CIFAR\x00" * 200_000
+    path = tmp_path / "payload"
+    path.write_bytes(payload)
+    assert md5_file(path) == hashlib.md5(payload).hexdigest()
+    expected = hashlib.sha256(payload).hexdigest()
+    assert openi_entry.file_sha(path) == expected
+    assert stream_hash(io.BytesIO(payload)) == expected
 
 
 def test_csv_validation_rejects_non_finite(tmp_path):
