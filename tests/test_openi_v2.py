@@ -16,7 +16,7 @@ from core.data import ImageRole, md5_file
 from core.hashing import stream_hash
 from core.splits import make_manifest, validate_manifest
 from scripts import openi_entry
-from scripts.openi import v2_data
+from scripts.openi import preflight, v2_data
 from scripts.openi.precheck_protocol import BLUR, GAUSSIAN, clients_for, qualify
 from scripts.openi.precheck_job import MODES, affordable_prefix, csv_check
 
@@ -116,6 +116,36 @@ def test_streaming_checksums_without_hashlib_file_digest(tmp_path, monkeypatch):
     expected = hashlib.sha256(payload).hexdigest()
     assert openi_entry.file_sha(path) == expected
     assert stream_hash(io.BytesIO(payload)) == expected
+
+
+def test_gpu_preflight_uses_the_selected_cuda_index(tmp_path, monkeypatch):
+    selected_device = torch.device("cuda", 2)
+
+    def on_cpu(create):
+        def checked_create(*args, device, **kwargs):
+            assert device == selected_device
+            return create(*args, **kwargs)
+        return checked_create
+
+    def memory_info(device):
+        assert device == selected_device
+        return 3 * 1024, 4 * 1024
+
+    monkeypatch.setattr(preflight, "runtime_identity", lambda: {"gpu": "test GPU"})
+    monkeypatch.setattr(preflight, "command", lambda *args: None)
+    monkeypatch.setattr(torch, "arange", on_cpu(torch.arange))
+    monkeypatch.setattr(torch, "tensor", on_cpu(torch.tensor))
+    monkeypatch.setattr(torch, "ones", on_cpu(torch.ones))
+    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
+    monkeypatch.setattr(torch.cuda, "current_device", lambda: 2)
+    monkeypatch.setattr(torch.cuda, "device_count", lambda: 3)
+    monkeypatch.setattr(torch.cuda, "get_arch_list", lambda: ["sm_80"])
+    monkeypatch.setattr(torch.cuda, "synchronize", lambda device: None)
+    monkeypatch.setattr(torch.cuda, "mem_get_info", memory_info)
+
+    report = preflight.inspect([tmp_path])
+    assert report["logical_device"] == 2
+    assert report["free_vram_bytes"] == 3 * 1024
 
 
 def test_csv_validation_rejects_non_finite(tmp_path):

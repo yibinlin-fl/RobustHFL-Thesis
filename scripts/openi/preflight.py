@@ -50,7 +50,7 @@ def inspect(paths, *, require_v100=False):
     import torchvision
     from torchvision.ops import nms
 
-    device = torch.device("cuda")
+    device = torch.device("cuda", torch.cuda.current_device())
     x = torch.arange(64, device=device, dtype=torch.float32).reshape(8, 8).requires_grad_()
     (x @ x.T).mean().backward()
     torch.fft.rfft2(x.detach())
@@ -64,7 +64,7 @@ def inspect(paths, *, require_v100=False):
         disks[str(path)] = {"total_bytes": usage.total, "used_bytes": usage.used, "free_bytes": usage.free}
     return {
         "runtime": runtime, "cuda_kernel_verified": True,
-        "cuda_visible_count": torch.cuda.device_count(), "logical_device": torch.cuda.current_device(),
+        "cuda_visible_count": torch.cuda.device_count(), "logical_device": device.index,
         "free_vram_bytes": free, "cuda_total_bytes": total, "architectures": torch.cuda.get_arch_list(),
         "python_executable": sys.executable, "torchvision_import": torchvision.__version__,
         "nvidia_smi": command("nvidia-smi", "--query-gpu=name,memory.total,memory.free,driver_version",
@@ -91,7 +91,7 @@ def calibrate(data_root, storage, report, source):
         batch, evaluation = max_batch // divisor, max_eval // divisor
         cfg.update(batch_size=batch, eval_batch_size=evaluation)
         torch.cuda.empty_cache()
-        free, _ = torch.cuda.mem_get_info(device)
+        free, _ = torch.cuda.mem_get_info()
         torch.cuda.reset_peak_memory_stats(device)
         clients, comparison, model, opt = None, None, None, None
         try:
