@@ -10,4 +10,4 @@ protocol:
 work1: {warmup_round: 1, repeats: 1, steps: 1, background_size: 2}
 probe1: {quantile_bins: 2, group_size: 2}
 probe2: {domains: [in_domain_proxy], delta_steps: 1, repeats: 1}
-budget: {max_seconds: 170, upload_each_stage: false}
+budget: {max_seconds: 170, reserve_seconds: 0, upload_each_stage: false}
